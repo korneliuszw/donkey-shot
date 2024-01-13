@@ -9,10 +9,14 @@ entities.push(new Platform(textureManager, 0, 1, 20), true);
 entities.push(new Platform(textureManager, 3, 5, 6), true);
 entities.push(new Platform(textureManager, 12, 5, 8), true);
 entities.push(new Platform(textureManager, 3, 8, 14), true);
+entities.push(new Platform(textureManager, 7, 12, 14), true);
+entities.push(new Platform(textureManager, 11, 15, 3), true);
 entities.push(new Ladder(textureManager, 5, 5, 4), true);
 entities.push(new Ladder(textureManager, 12, 5, 4), true);
 entities.push(new Ladder(textureManager, 3, 8, 4), true);
 entities.push(new Ladder(textureManager, 15, 8, 4), true);
+entities.push(new Ladder(textureManager, 9, 12, 4), true);
+entities.push(new Ladder(textureManager, 11, 15, 3), true);
 entities.push(player, true);
 }
 void GameWindow::drawOntoWindow(SDL_Renderer *renderer) {

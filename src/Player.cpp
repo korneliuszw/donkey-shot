@@ -103,7 +103,7 @@ void Player::update(const FrameTimings& timings) {
         if (!onGround && collidingWithPlatform && jumpTime < JUMP_DURATION) {
             position.y = collidingWithPlatform->position.y - 0.5;
             yVelocity = -0.5 * (JUMP_FORCE * (timings.timeDelta / 1000.0));
-            jumpTime = max(JUMP_DURATION - 200, jumpTime);
+            jumpTime = max(JUMP_DURATION - 25, jumpTime);
         }
         position.y += yVelocity;
     }
@@ -149,21 +149,10 @@ void Player::moveRight(bool isMovingPressed) {
     direction.x = 1;
 }
 void Player::moveUp(bool isMovingPressed) {
-    climbing = isMovingPressed && canClimb;
+    climbing = isMovingPressed && canClimb && !isJumping;
     if (!climbing) return;
     onLadder = true;
     yVelocity = 3.5;
     direction.y = 1;
 }
-void Player::moveDown(bool isMovingPressed) {
-    climbing = isMovingPressed && canClimb;
-    if (!climbing) return;
-    onLadder = true;
-    yVelocity = -3;
-    direction.y = -1;
-}
-void Player::jump() {
-    if (isJumping || !onGround) return;
-    isJumping = true;
-    direction.y = 1;
-}
+void Player::moveDown(
