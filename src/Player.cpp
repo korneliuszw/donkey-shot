@@ -126,7 +126,6 @@ void Player::update(const FrameTimings& timings) {
         currentAnimation = PlayerAnimation::WALK;
         switchAnimationType();
     } else if (climbing && !(onGround && direction.y == -1)) {
-        if (direction.y == -1) printf("On ground %d and climbing down\n", onGround);
         position.y += yVelocity * (timings.timeDelta / 1000.0);
     }
     if (currentAnimation != PlayerAnimation::IDLE) {
