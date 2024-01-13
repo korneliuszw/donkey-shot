@@ -1,0 +1,5 @@
+x64
+SDL2-2.0.10
+cmake-build-debug
+libSDL2.a
+.idea
