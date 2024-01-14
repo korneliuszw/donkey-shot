@@ -155,4 +155,15 @@ void Player::moveUp(bool isMovingPressed) {
     yVelocity = 3.5;
     direction.y = 1;
 }
-void Player::moveDown(
+void Player::moveDown(bool isMovingPressed) {
+    climbing = isMovingPressed && canClimb && !isJumping;
+    if (!climbing) return;
+    onLadder = true;
+    yVelocity = -3;
+    direction.y = -1;
+}
+void Player::jump() {
+    if (isJumping || !onGround) return;
+    isJumping = true;
+    direction.y = 1;
+}
