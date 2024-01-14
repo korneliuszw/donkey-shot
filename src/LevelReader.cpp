@@ -45,6 +45,8 @@ Entity *LevelReader::readLine() {
             return createPlatform();
         case 'L':
             return createLadder();
+        case 'F':
+            return createFinish();
         default:
             return nullptr;
     }
@@ -57,6 +59,7 @@ Entity *LevelReader::readLine() {
  * Y - gracz
  * P - platform
  * L - drabinka
+ * F - linia koncowa. ZAWSZE NA KONCU PLIKU
  * @param levelNumber
  * @return
  */
@@ -71,4 +74,14 @@ List<Entity>* LevelReader::readLevel(int levelNumber) {
         entities->push(entity, true);
     }
     return entities;
+}
+
+Entity* LevelReader::createFinish() {
+    int x, y;
+    char c;
+    if (fscanf(file, "%d %d %c", &x, &y, &c) < 2  || (c != 'L' && c != 'R') ) {
+        signal_reading_error("Failed to load level! Corrupted finish line. Correct format is 'F <x> <y> <L | R>'");
+    }
+    this->finish = new Finish(x, y, c == 'L');
+    return nullptr;
 }

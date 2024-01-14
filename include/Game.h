@@ -5,6 +5,7 @@
 #include <Entity.h>
 #include <Player.h>
 #include <Window.h>
+#include "Finish.h"
 
 constexpr int WINDOW_WIDTH = 640;
 constexpr int WINDOW_HEIGHT = 680;
@@ -14,6 +15,8 @@ private:
     List<Entity>* entities = nullptr;
     TextureManager* textureManager;
     int currentLevel = 0;
+    Finish* finish = nullptr;
+    bool atFinishLine = false;
 public:
     Player* player;
     explicit Game(TextureManager* textureManager);

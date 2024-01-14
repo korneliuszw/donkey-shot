@@ -23,9 +23,16 @@ void Game::changeLevel(int newLevel) {
     entities = reader.readLevel(newLevel);
     player = reader.getPlayer();
     currentLevel = newLevel;
+    finish = reader.getFinish();
 }
 
 void Game::update(const FrameTimings &timings) {
+    if (finish && finish->isFinished(player) && !atFinishLine) {
+        printf("Player at finish line!\n");
+        atFinishLine = true;
+    } else if (finish && !finish->isFinished(player)) {
+        atFinishLine = false;
+    }
     player->checkCollisions(*entities);
     player->update(timings);
 }
