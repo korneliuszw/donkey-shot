@@ -133,7 +133,7 @@ void Player::update(const FrameTimings& timings) {
         switchAnimationType();
     }
     position.x = min(max(position.x, -0.5), SCREEN_WIDTH / BLOCK_WIDTH - 1);
-    position.y = min(max(position.y, 1), SCREEN_HEIGHT / BLOCK_HEIGHT - 1);
+    position.y = min(max(position.y, 1), (double) SCREEN_HEIGHT / BLOCK_HEIGHT + 0.5);
     updateAnimations(timings.timeDelta);
 }
 void Player::moveLeft(bool isMovingPressed) {
