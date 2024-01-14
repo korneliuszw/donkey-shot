@@ -12,7 +12,7 @@ class GameInfo {
 private:
     int gameTime = 0;
     int score = 0;
-    char* implementedRequirements = "1, 2, 3, 4, A";
+    char* implementedRequirements = "1, 2, 3, 4, A, B, E a b, I";
     int fps = 0;
     int frames = 0;
     int fpsTimer = 0;
