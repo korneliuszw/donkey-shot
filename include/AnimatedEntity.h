@@ -9,6 +9,7 @@ private:
     int frameNumber = 0;
     int textureWidth = 0;
 protected:
+    int spriteSpacings = 0;
     int animationSheetIndex = 0;
     int currentSheetIndex = 0;
     int frameDuration = 0;
@@ -21,8 +22,8 @@ protected:
             currentSheetIndex = 0;
         }
         currentSheetIndex = frameNumber + animationSheetIndex;
-        spriteRect.x = (currentSheetIndex * spriteRect.w) % textureWidth;
-        spriteRect.y = (currentSheetIndex * spriteRect.w) / textureWidth * spriteRect.h;
+        spriteRect.x = (currentSheetIndex * (spriteRect.w + spriteSpacings)) % textureWidth;
+        spriteRect.y = (currentSheetIndex * (spriteRect.w + spriteSpacings)) / textureWidth * spriteRect.h;
     }
 
     void updateAnimations(unsigned long timeDelta) {
@@ -30,7 +31,7 @@ protected:
             return;
         currentFrameTime += timeDelta;
         if (currentFrameTime >= frameDuration) {
-            frameNumber = (frameNumber + 1) % frameCount;
+            frameNumber = (frameNumber + (currentFrameTime / frameDuration)) % frameCount;
             switchAnimation();
             currentFrameTime = 0;
         }

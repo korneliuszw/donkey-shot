@@ -22,7 +22,7 @@ add_executable(DonkeyShot
         src/Player.cpp include/Player.h
         src/Window.cpp include/Window.h
         src/Game.cpp include/Game.h
-        src/WindowManager.cpp include/WindowManager.h src/StaticEntities.cpp src/DataStructures.cpp src/InfoWindow.cpp include/InfoWindow.h include/Collider.h src/LevelReader.cpp include/LevelReader.h src/Finish.cpp include/Finish.h)
+        src/WindowManager.cpp include/WindowManager.h src/StaticEntities.cpp src/DataStructures.cpp src/InfoWindow.cpp include/InfoWindow.h include/Collider.h src/LevelReader.cpp include/LevelReader.h src/Finish.cpp include/Finish.h src/Kong.cpp include/Kong.h)
 
 target_link_libraries(DonkeyShot ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
 

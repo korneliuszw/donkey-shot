@@ -10,3 +10,7 @@ bool Finish::isFinished(Player *player) {
     }
     return player->position.x + player->position.width > this->x && player->position.y > this->y;
 }
+
+void Finish::createKong(TextureManager *textureManager) {
+    this->kong = new Kong(textureManager, x, y);
+}

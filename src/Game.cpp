@@ -20,10 +20,12 @@ void Game::changeLevel(int newLevel) {
         }
         delete entities;
     }
+    delete finish;
     entities = reader.readLevel(newLevel);
     player = reader.getPlayer();
     currentLevel = newLevel;
     finish = reader.getFinish();
+    finish->createKong(textureManager);
 }
 
 void Game::update(const FrameTimings &timings) {
@@ -35,6 +37,7 @@ void Game::update(const FrameTimings &timings) {
     }
     player->checkCollisions(*entities);
     player->update(timings);
+    if (finish->kong) finish->kong->update(timings);
 }
 
 void Game::render(SDL_Renderer *renderer) {
@@ -43,6 +46,7 @@ void Game::render(SDL_Renderer *renderer) {
         head->getValue()->draw(renderer);
         head = head->next;
     }
+    if (finish->kong) finish->kong->draw(renderer);
 }
 
 void GameWindow::drawOntoWindow(SDL_Renderer *renderer) {
