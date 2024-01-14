@@ -3,22 +3,41 @@
 //
 #include <Game.h>
 #include <StaticEntities.h>
-Game::Game(TextureManager* textureManager) {
-player = new Player(textureManager, 1, 1);
-entities.push(new Platform(textureManager, 0, 1, 20), true);
-entities.push(new Platform(textureManager, 3, 5, 6), true);
-entities.push(new Platform(textureManager, 12, 5, 8), true);
-entities.push(new Platform(textureManager, 3, 8, 14), true);
-entities.push(new Platform(textureManager, 7, 12, 14), true);
-entities.push(new Platform(textureManager, 11, 15, 3), true);
-entities.push(new Ladder(textureManager, 5, 5, 4), true);
-entities.push(new Ladder(textureManager, 12, 5, 4), true);
-entities.push(new Ladder(textureManager, 3, 8, 4), true);
-entities.push(new Ladder(textureManager, 15, 8, 4), true);
-entities.push(new Ladder(textureManager, 9, 12, 4), true);
-entities.push(new Ladder(textureManager, 11, 15, 3), true);
-entities.push(player, true);
+#include "LevelReader.h"
+
+Game::Game(TextureManager *textureManager) : textureManager{textureManager} {
+    this->changeLevel(1);
 }
+
+void Game::changeLevel(int newLevel) {
+    if (newLevel == currentLevel) return;
+    LevelReader reader(textureManager);
+    if (entities) {
+        auto head = entities->getFirst();
+        while (head != nullptr) {
+            delete head->value;
+            head = head->next;
+        }
+        delete entities;
+    }
+    entities = reader.readLevel(newLevel);
+    player = reader.getPlayer();
+    currentLevel = newLevel;
+}
+
+void Game::update(const FrameTimings &timings) {
+    player->checkCollisions(*entities);
+    player->update(timings);
+}
+
+void Game::render(SDL_Renderer *renderer) {
+    auto head = entities->getFirst();
+    while (head != nullptr) {
+        head->getValue()->draw(renderer);
+        head = head->next;
+    }
+}
+
 void GameWindow::drawOntoWindow(SDL_Renderer *renderer) {
     SDL_SetRenderTarget(renderer, windowTexture);
     SET_DEFAULT_COLOR(renderer);
@@ -28,15 +47,52 @@ void GameWindow::drawOntoWindow(SDL_Renderer *renderer) {
     SDL_Rect rect = {x, y, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, windowTexture, nullptr, &rect);
 }
-GameWindow::GameWindow(SDL_Renderer* renderer, TextureManager* textureManager, int x, int y) : Window<Game>() {
+
+GameWindow::GameWindow(SDL_Renderer *renderer, TextureManager *textureManager, int x, int y) : Window<Game>() {
     entity = new Game(textureManager);
     this->x = x;
     this->y = WINDOW_HEIGHT - y;
     this->w = SCREEN_WIDTH;
     this->h = SCREEN_HEIGHT;
-    windowTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_UNKNOWN, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+    windowTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_UNKNOWN, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH,
+                                      SCREEN_HEIGHT);
 }
+
 GameWindow::~GameWindow() {
     delete entity;
     SDL_DestroyTexture(windowTexture);
+}
+
+void GameWindow::handleEvent(SDL_Event &event) {
+    if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+        switch (event.key.keysym.sym) {
+            case SDLK_LEFT:
+                entity->player->moveLeft(event.type == SDL_KEYDOWN);
+                break;
+            case SDLK_RIGHT:
+                entity->player->moveRight(event.type == SDL_KEYDOWN);
+                break;
+            case SDLK_UP:
+                entity->player->moveUp(event.type == SDL_KEYDOWN);
+                break;
+            case SDLK_DOWN:
+                entity->player->moveDown(event.type == SDL_KEYDOWN);
+                break;
+            case SDLK_SPACE:
+                entity->player->jump();
+                break;
+            case SDLK_1:
+                entity->changeLevel(1);
+                break;
+            case SDLK_2:
+                entity->changeLevel(2);
+                break;
+            case SDLK_3:
+                entity->changeLevel(3);
+                break;
+            default:
+                break;
+
+        }
+    }
 }

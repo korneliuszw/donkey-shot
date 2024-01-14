@@ -7,11 +7,13 @@
 template <typename T> class List {
 private:
     class Node {
+    private:
+        bool owned = true;
     public:
         T* value = nullptr;
         Node* next = nullptr;
         Node* prev = nullptr;
-        explicit Node(T* value, bool copy = true) {
+        explicit Node(T* value, bool copy = true) : owned{copy} {
             if (copy)
                 this->value = new T{ *value};
             else {
@@ -19,7 +21,7 @@ private:
             }
         }
         ~Node() {
-            free(next);
+            if (owned) delete value;
         }
         T* getValue() {
             return value;
@@ -63,8 +65,6 @@ public:
         return head;
     }
     ~List() {
-        if (tail != head)
-            delete tail;
         delete head;
     }
 

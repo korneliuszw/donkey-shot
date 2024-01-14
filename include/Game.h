@@ -11,21 +11,15 @@ constexpr int WINDOW_HEIGHT = 680;
 
 class Game {
 private:
-    List<Entity> entities;
+    List<Entity>* entities = nullptr;
+    TextureManager* textureManager;
+    int currentLevel = 0;
 public:
     Player* player;
     explicit Game(TextureManager* textureManager);
-    void update(const FrameTimings& timings) {
-        player->checkCollisions(entities);
-        player->update(timings);
-    }
-    void render(SDL_Renderer* renderer) {
-        auto head = entities.getFirst();
-        while (head != nullptr) {
-            head->getValue()->draw(renderer);
-            head = head->next;
-        }
-    }
+    void changeLevel(int newLevel = 1);
+    void update(const FrameTimings& timings);
+    void render(SDL_Renderer* renderer);
 };
 
 class GameWindow : public Window<Game> {
@@ -36,35 +30,8 @@ public:
 
     void drawOntoWindow(SDL_Renderer *renderer) override;
 
-    void handleEvent(SDL_Event &event) override {
-        if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-            switch (event.key.keysym.sym) {
-//                case SDLK_UP:
-//                    entity->player->moveUp();
-//                    break;
-//                case SDLK_DOWN:
-//                    entity->player->moveDown();
-//                    break;
-                case SDLK_LEFT:
-                    entity->player->moveLeft(event.type == SDL_KEYDOWN);
-                    break;
-                case SDLK_RIGHT:
-                    entity->player->moveRight(event.type == SDL_KEYDOWN);
-                    break;
-                case SDLK_UP:
-                    entity->player->moveUp(event.type == SDL_KEYDOWN);
-                    break;
-                case SDLK_DOWN:
-                    entity->player->moveDown(event.type == SDL_KEYDOWN);
-                    break;
-                case SDLK_SPACE:
-                    entity->player->jump();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+    void handleEvent(SDL_Event &event) override;
+
     GameWindow(SDL_Renderer* renderer, TextureManager* textureManager, int x, int y);
 
     ~GameWindow() override;
