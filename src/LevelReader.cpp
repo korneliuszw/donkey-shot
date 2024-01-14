@@ -7,22 +7,30 @@
 #include <Entity.h>
 #include <Player.h>
 
+void signal_reading_error(char* str) {
+    fprintf(stderr, "%s\n", str);
+    exit(10);
+}
+
 Player *LevelReader::createPlayer() {
     int x, y;
-    fscanf(file, "%d %d\n", &x, &y);
+    if (fscanf(file, "%d %d\n", &x, &y) < 2)
+        signal_reading_error("Failed to loading level! Corrupted plyer information. Correct format is 'Y <X> <Y>'");
     this->player = new Player(textureManager, x, y);
     return this->player;
 }
 
 Ladder *LevelReader::createLadder() {
     int x, y, h;
-    fscanf(file, "%d %d %d\n", &x, &y, &h);
+    if (fscanf(file, "%d %d %d\n", &x, &y, &h) < 3)
+        signal_reading_error("Failed to loading level! Corrupted ladder information. Correct format is 'L <X> <Y> <H>'");
     return new Ladder(textureManager, x, y, h);
 }
 
 Platform *LevelReader::createPlatform() {
     int x, y, w;
-    fscanf(file, "%d %d %d\n", &x, &y, &w);
+    if (fscanf(file, "%d %d %d\n", &x, &y, &w) < 3)
+        signal_reading_error("Failed to loading level! Corrupted platform information. Correct format is 'P <X> <Y> <W>'");
     return new Platform(textureManager, x, y, w);
 }
 
@@ -57,8 +65,7 @@ List<Entity>* LevelReader::readLevel(int levelNumber) {
     char path[256];
     sprintf(path, "levels/%d.level", levelNumber);
     if (access(path, R_OK) == -1 || (file = fopen(path, "r")) == NULL) {
-        fprintf(stderr, "Level %d failed to load!!", levelNumber);
-        exit(10);
+        signal_reading_error("Failed to load level! Can't read or doesn't exist");
     }
     while (Entity* entity = readLine()) {
         entities->push(entity, true);
